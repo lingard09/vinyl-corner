@@ -2,6 +2,7 @@
 const { app, BrowserWindow, Menu, ipcMain, screen } = require("electron");
 const path = require("node:path");
 const { readNowPlaying, togglePlay } = require("./nowplaying");
+const { startSystem, stopSystem } = require("./system");
 
 const WIDTH = 280; // 창 크기 (LP + 톤암 + 위쪽 곡 정보 말풍선)
 const HEIGHT = 260;
@@ -84,6 +85,8 @@ ipcMain.on("menu", () => {
   ]).popup({ window: win });
 });
 
+app.on("will-quit", stopSystem);
+
 // 두 번 실행하면 하나만 남긴다
 if (!app.requestSingleInstanceLock()) {
   app.quit();
@@ -91,6 +94,7 @@ if (!app.requestSingleInstanceLock()) {
   app.whenReady().then(() => {
     app.dock?.hide(); // 독에 아이콘을 띄우지 않는다 (끄기는 LP 오른쪽 클릭 메뉴에서)
     createWindow();
+    startSystem(); // 브라우저 등 시스템 "지금 재생 중" (준비 안 됐으면 조용히 건너뜀)
     poll();
     setInterval(poll, POLL_MS);
   });

@@ -54,7 +54,7 @@
 | --- | --- |
 | macOS | 12 Monterey 이상 (Apple 실리콘, 인텔) |
 | 음악 앱 | Spotify 데스크톱 앱, Apple Music 앱 |
-| 아직 안 되는 것 | 브라우저 재생(유튜브, 멜론 웹 등) |
+| 브라우저 | 유튜브 뮤직, 유튜브, 멜론 웹 등 제어 센터 "지금 재생 중"에 뜨는 재생 |
 
 ## 개인정보
 
@@ -68,6 +68,7 @@ Spotify 곡은 Spotify 앱이 알려주는 커버 주소를 그대로 씁니다.
 git clone https://github.com/lingard09/vinyl-corner.git
 cd vinyl-corner
 npm install
+npm run adapter    # 브라우저 재생 읽기용 (cmake 필요: brew install cmake). 건너뛰면 Spotify·Music만
 npm start          # 바로 실행
 npm run dist       # dist/ 에 dmg 만들기
 ```
@@ -81,14 +82,18 @@ npm run dist       # dist/ 에 dmg 만들기
 | `src/preload.js` | 화면에서 쓸 수 있는 기능만 골라서 열어줍니다 |
 | `src/renderer/` | 판(CSS 동심원), 톤암(SVG), 곡이 바뀔 때 라벨 교체 |
 
-macOS 15.4부터 시스템의 "지금 재생 중" 기능(MediaRemote)을 일반 앱이 쓸 수 없게 막혀서,
-음악 앱에 직접 묻는 공식 방법을 씁니다. 그래서 지원하는 앱이 Spotify·Music입니다.
+| `src/system.js` | 브라우저 등 그 밖의 재생을 시스템 "지금 재생 중"에서 읽습니다 |
+
+macOS 15.4부터 시스템의 "지금 재생 중" 기능(MediaRemote)을 일반 앱이 쓸 수 없게 막혔습니다.
+그래서 Spotify·Music은 음악 앱에 직접 묻는 공식 방법을 쓰고, 브라우저 재생은
+[mediaremote-adapter](https://github.com/ungive/mediaremote-adapter)(BSD-3)로 macOS 기본 perl을 거쳐 읽습니다.
+이쪽은 애플이 다시 막을 수 있는 우회라서, 막히면 브라우저 재생만 안 보이고 Spotify·Music은 그대로 됩니다.
 
 ## 앞으로
 
 - [ ] 앨범 커버 색으로 자동 컬러반
 - [ ] 판 색 고르기 (블랙, 화이트, 마블)
-- [ ] 브라우저 재생 지원
+- [x] 브라우저 재생 지원 (유튜브 뮤직 등)
 - [ ] 실물 LP 연동: 슬리브의 NFC 태그를 폰으로 톡 → 지금 올린 판을 맥에도
 
 아이디어나 버그는 [Issues](https://github.com/lingard09/vinyl-corner/issues)에 남겨 주세요.

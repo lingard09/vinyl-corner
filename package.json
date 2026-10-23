@@ -11,6 +11,7 @@
   "private": true,
   "main": "src/main.js",
   "scripts": {
+    "adapter": "bash scripts/build-adapter.sh",
     "start": "electron .",
     "dist": "electron-builder --mac",
     "release": "electron-builder --mac --publish always"
@@ -51,6 +52,12 @@
     "publish": {
       "provider": "github",
       "releaseType": "release"
-    }
+    },
+    "extraResources": [
+      {
+        "from": "vendor/mediaremote",
+        "to": "mediaremote"
+      }
+    ]
   }
 }

@@ -7,6 +7,7 @@ const title = document.getElementById("title");
 const artist = document.getElementById("artist");
 
 let shownId = null;
+let shownArt = null;
 
 window.lp.onNowPlaying((track) => {
   if (!track) {
@@ -21,12 +22,15 @@ window.lp.onNowPlaying((track) => {
   title.textContent = track.title;
   artist.textContent = track.artist;
 
-  // 곡이 바뀌었을 때만 라벨(앨범 커버)을 바꾼다
+  // 곡이나 커버가 바뀌었을 때만 라벨을 바꾼다 (브라우저는 커버가 제목보다 늦게 오기도 한다)
   if (track.id !== shownId) {
     shownId = track.id;
     initial.textContent = [...(track.title || "♪")][0];
+  }
+  if ((track.art || null) !== shownArt) {
+    shownArt = track.art || null;
     art.classList.remove("ready");
-    if (track.art) art.src = track.art;
+    if (shownArt) art.src = shownArt;
     else art.removeAttribute("src");
   }
 });

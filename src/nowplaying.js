@@ -1,10 +1,11 @@
 // 지금 재생 중인 곡 읽기
 //
-// macOS 15.4부터 "지금 재생 중" 시스템 기능(MediaRemote)을 일반 앱이 못 쓰게 막혀서,
-// 음악 앱에 직접 물어보는 공식 방법(AppleScript)을 쓴다. 대신 Spotify 앱과 Apple Music 앱만 된다.
+// Spotify·Music 앱은 음악 앱에 직접 물어보는 공식 방법(AppleScript)으로 읽는다.
+// 그 밖의 재생(브라우저의 유튜브 뮤직 등)은 system.js가 시스템 "지금 재생 중"에서 읽는다.
 // 처음 실행하면 macOS가 "이 앱이 Spotify(Music)를 제어하려고 합니다" 권한을 한 번 묻는다.
 
 const { execFile } = require("node:child_process");
+const { readSystem, toggleSystem } = require("./system");
 
 // osascript에 넘길 JavaScript(JXA). 켜져 있는 앱만 확인하고, 꺼진 앱을 새로 켜지 않는다(running()).
 // 재생 중인 앱을 먼저, 없으면 일시정지된 앱을 고른다.
@@ -50,17 +51,27 @@ function osascript(script) {
   });
 }
 
-/** 지금 재생 중인 곡. 없으면 null */
+/** 지금 재생 중인 곡. 없으면 null
+ * 재생 중인 Spotify·Music → 재생 중인 브라우저 등(시스템) → 일시정지된 Spotify·Music → 일시정지된 시스템 순 */
 async function readNowPlaying() {
-  const out = await osascript(READ_SCRIPT);
-  const track = out ? JSON.parse(out) : null;
-  if (track) track.progress = Math.round(track.progress * 1000) / 1000;
-  if (track && !track.art) track.art = await findArtwork(track.artist, track.album);
+  let app = null;
+  try {
+    const out = await osascript(READ_SCRIPT);
+    app = out ? JSON.parse(out) : null;
+  } catch {
+    // osascript가 실패해도 시스템 쪽은 보여준다
+  }
+  const sys = readSystem();
+  const track = [app, sys].find((t) => t?.playing) || app || sys || null;
+  if (!track) return null;
+  track.progress = Math.round(track.progress * 1000) / 1000;
+  if (!track.art && track.album) track.art = await findArtwork(track.artist, track.album);
   return track;
 }
 
 /** 재생/일시정지 전환 (LP를 클릭했을 때) */
 function togglePlay(appName) {
+  if (appName === "system") return toggleSystem();
   if (appName !== "Spotify" && appName !== "Music") return Promise.resolve();
   return osascript(`Application(${JSON.stringify(appName)}).playpause()`).catch(() => {});
 }
