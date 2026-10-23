@@ -32,6 +32,12 @@ jobs:
             git tag "$TAG"
             git push origin "$TAG"
           fi
+          # 초안을 먼저 하나 만들어 둔다. 없으면 파일 올리기가 동시에 시작되며 초안이 두 개 생긴다
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" --draft --title "${TAG#v}" --notes ""
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
