@@ -31,6 +31,7 @@ npm run dist
 
 - `LSUIElement`: 독에 아이콘을 띄우지 않는다
 - `NSAppleEventsUsageDescription`: Spotify·Music 제어 권한을 물을 때 보여줄 문장. 이게 없으면 배포한 앱에서는 권한 창이 안 뜨고 곡을 못 읽는다
+- 앱 아이콘: `build/icon.svg`가 원본, `build/icon.png`(1024px)로 빌드 때 맥 아이콘을 만든다
 - `identity: "-"`: 정식 서명 대신 임시(ad-hoc) 서명. 서명이 아예 없으면 Apple 실리콘 맥에서 "손상된 앱"으로 나온다
 
 ## 지원하는 앱

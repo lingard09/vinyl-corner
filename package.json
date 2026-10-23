@@ -35,7 +35,8 @@
       "extendInfo": {
         "LSUIElement": true,
         "NSAppleEventsUsageDescription": "지금 재생 중인 노래를 LP로 보여주려고 Spotify와 Music에 곡 정보를 물어봅니다."
-      }
+      },
+      "icon": "build/icon.png"
     },
     "dmg": {
       "artifactName": "Pandori-${version}-${arch}.dmg"
