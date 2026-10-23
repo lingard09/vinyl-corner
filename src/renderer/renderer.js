@@ -8,6 +8,9 @@ const artist = document.getElementById("artist");
 
 let shownId = null;
 let shownArt = null;
+const HOLD_MS = 2000;
+let holdUntil = 0;
+let heldPlaying = false;
 
 window.lp.onNowPlaying((track) => {
   if (!track) {
@@ -16,7 +19,9 @@ window.lp.onNowPlaying((track) => {
     return;
   }
   deck.classList.remove("away");
-  deck.classList.toggle("playing", track.playing);
+  // 클릭 직후에는 음악 앱이 옛 상태를 섞어 보내도 누른 상태를 유지한다 (main.js의 HOLD_MS)
+  const holding = Date.now() < holdUntil;
+  deck.classList.toggle("playing", holding ? heldPlaying : track.playing);
   // 곡이 진행될수록 톤암이 판 안쪽으로 들어간다
   deck.style.setProperty("--progress", track.progress ?? 0);
   title.textContent = track.title;
@@ -55,7 +60,9 @@ platter.addEventListener("mouseleave", () => window.lp.setClickable(false));
 // 재생/일시정지. 음악 앱의 응답(최대 1초)을 기다리지 않고 판·톤암을 먼저 바꾼다
 // (실제 상태는 main이 바로 다시 보내서 맞춘다)
 platter.addEventListener("click", () => {
-  deck.classList.toggle("playing");
+  heldPlaying = !deck.classList.contains("playing");
+  holdUntil = Date.now() + HOLD_MS;
+  deck.classList.toggle("playing", heldPlaying);
   platter.classList.remove("tap");
   void platter.offsetWidth; // 연달아 눌러도 링 애니메이션이 다시 시작되게
   platter.classList.add("tap");

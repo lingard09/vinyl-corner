@@ -9,6 +9,7 @@ const WIDTH = 280; // 창 크기 (LP + 톤암 + 위쪽 곡 정보 말풍선)
 const HEIGHT = 260;
 const MARGIN = 12; // 화면 가장자리와의 간격
 const POLL_MS = 1000; // 곡 정보를 확인하는 간격
+const HOLD_MS = 2000; // 클릭 뒤 화면이 누른 상태를 붙잡아 두는 시간 (renderer.js와 같게)
 
 let win = null;
 let current = null; // 마지막으로 보낸 곡
@@ -122,10 +123,10 @@ ipcMain.on("set-clickable", (_e, clickable) => {
 ipcMain.on("toggle", () => {
   // 화면은 누르자마자 바꿔 두니(renderer.js), 확인한 실제 상태를 바뀌었든 아니든 다시 보낸다
   if (current) {
-    // 브라우저 쪽은 바뀐 상태가 조금 늦게 들어와서, 바로 확인하면 옛 상태로 되돌아갔다가 다시 바뀐다
-    const settle = current.app === "system" ? 600 : 0;
+    // 음악 앱은 멈출 때 잠깐 재생 중과 멈춤을 오가며 알려주기도 해서, 화면은 클릭 뒤 2초 동안
+    // 누른 상태를 붙잡아 둔다(renderer.js). 그 뒤에 실제 상태를 확인해 한 번 보내 맞춘다
     togglePlay(current.app)
-      .then(() => new Promise((resolve) => setTimeout(resolve, settle)))
+      .then(() => new Promise((resolve) => setTimeout(resolve, HOLD_MS + 100)))
       .then(pollFresh)
       .then(() => win?.webContents.send("now-playing", current));
   }
