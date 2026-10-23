@@ -6,7 +6,7 @@
 
 <p align="center">
   지금 듣는 노래를, 맥 화면 구석에서 도는 LP로.<br>
-  <sub>A tiny spinning record for the corner of your Mac — shows what's playing in Spotify or Apple Music.</sub>
+  <sub>A tiny spinning record for the corner of your Mac — shows what's playing in Spotify, Apple Music, or YouTube Music in your browser.</sub>
 </p>
 
 <p align="center">
@@ -21,6 +21,7 @@
 
 - 재생 중이면 판이 **33⅓ RPM**으로 돌고, 톤암이 판 위로 내려옵니다
 - 곡이 진행될수록 톤암이 판 **안쪽으로** 천천히 들어갑니다
+- Spotify, Apple Music 앱은 물론 브라우저의 **유튜브 뮤직**도
 - 가운데 라벨은 지금 곡의 **앨범 커버**
 - LP에 마우스를 올리면 곡 제목, 클릭하면 재생/일시정지
 - 오른쪽 클릭으로 **45 RPM** 전환, 끄기
@@ -30,6 +31,7 @@
 ## 설치
 
 1. [Releases](https://github.com/lingard09/vinyl-corner/releases/latest)에서 내 맥에 맞는 dmg를 받습니다
+   (사과 메뉴 → 이 Mac에 관하여에서 "칩: Apple M…"이면 arm64, "프로세서: Intel…"이면 x64)
    - Apple 실리콘(M1 이후): `VinylCorner-x.y.z-arm64.dmg`
    - 인텔: `VinylCorner-x.y.z-x64.dmg`
 2. dmg를 열고 Vinyl Corner를 응용 프로그램 폴더로 옮깁니다
@@ -43,8 +45,8 @@
    - "그래도 열기" 버튼은 앱을 열어 본 뒤 **약 한 시간 동안만** 보여요. 안 보이면 앱을 한 번 더 열고 다시 가보세요
    - 새 버전으로 덮어쓴 뒤에도 한 번 더 해야 할 수 있어요
    - 터미널이 편하다면: `xattr -dr com.apple.quarantine "/Applications/Vinyl Corner.app"`
-4. "Vinyl Corner가 Spotify(Music)를 제어하려고 합니다"가 뜨면 **허용**합니다.
-   곡 정보를 읽는 데만 씁니다
+4. Spotify·Music 앱을 쓴다면 "Vinyl Corner가 Spotify(Music)를 제어하려고 합니다"가 뜰 때 **허용**합니다.
+   곡 정보를 읽는 데만 씁니다 (브라우저 재생은 이 권한이 필요 없어요)
 
 > 권한을 거절했다면 시스템 설정 → 개인정보 보호 및 보안 → 자동화에서 다시 켤 수 있어요.
 
@@ -59,8 +61,8 @@
 ## 개인정보
 
 Vinyl Corner는 아무 데이터도 수집하거나 보내지 않습니다.
-밖으로 나가는 요청은 하나뿐이에요. Apple Music 곡의 앨범 커버를 찾으려고 **가수와 앨범 이름**으로 [iTunes 검색 API](https://performance-partners.apple.com/search-api)에 묻습니다.
-Spotify 곡은 Spotify 앱이 알려주는 커버 주소를 그대로 씁니다.
+밖으로 나가는 요청은 하나뿐이에요. Apple Music 곡처럼 커버를 받지 못한 곡의 앨범 커버를 찾으려고 **가수와 앨범 이름**으로 [iTunes 검색 API](https://performance-partners.apple.com/search-api)에 묻습니다.
+Spotify 곡은 Spotify 앱이, 브라우저 곡은 브라우저가 알려주는 커버를 그대로 씁니다.
 
 ## 직접 빌드하기
 
