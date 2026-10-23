@@ -36,6 +36,23 @@ html, body {
   border-radius: 50%;
   filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.35));
   cursor: pointer;
+  transition: transform 0.12s ease-out;
+}
+/* 누르는 동안 살짝 눌리고, 손을 떼면 판 둘레로 링이 퍼진다 */
+#platter:active { transform: scale(0.96); }
+#platter::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  opacity: 0;
+  pointer-events: none;
+}
+#platter.tap::after { animation: tap 0.5s ease-out; }
+@keyframes tap {
+  from { opacity: 1; transform: scale(0.96); }
+  to { opacity: 0; transform: scale(1.12); }
 }
 
 /* 판: 가는 동심원을 반복해서 홈을 그린다 */

@@ -52,7 +52,16 @@ window.lp.onRpm((rpm) => {
 // LP 위에서만 클릭을 받는다. 나머지 영역은 뒤 창으로 클릭이 통과한다
 platter.addEventListener("mouseenter", () => window.lp.setClickable(true));
 platter.addEventListener("mouseleave", () => window.lp.setClickable(false));
-platter.addEventListener("click", () => window.lp.toggle()); // 재생/일시정지
+// 재생/일시정지. 음악 앱의 응답(최대 1초)을 기다리지 않고 판·톤암을 먼저 바꾼다
+// (실제 상태는 main이 바로 다시 보내서 맞춘다)
+platter.addEventListener("click", () => {
+  deck.classList.toggle("playing");
+  platter.classList.remove("tap");
+  void platter.offsetWidth; // 연달아 눌러도 링 애니메이션이 다시 시작되게
+  platter.classList.add("tap");
+  window.lp.toggle();
+});
+platter.addEventListener("animationend", () => platter.classList.remove("tap"));
 platter.addEventListener("contextmenu", (e) => {
   e.preventDefault();
   window.lp.menu(); // 33⅓/45 RPM, 끄기

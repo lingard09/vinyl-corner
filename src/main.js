@@ -112,7 +112,15 @@ ipcMain.on("set-clickable", (_e, clickable) => {
 });
 
 ipcMain.on("toggle", () => {
-  if (current) togglePlay(current.app).then(poll);
+  // 화면은 누르자마자 바꿔 두니(renderer.js), 확인한 실제 상태를 바뀌었든 아니든 다시 보낸다
+  if (current) {
+    // 브라우저 쪽은 바뀐 상태가 조금 늦게 들어와서, 바로 확인하면 옛 상태로 되돌아갔다가 다시 바뀐다
+    const settle = current.app === "system" ? 600 : 0;
+    togglePlay(current.app)
+      .then(() => new Promise((resolve) => setTimeout(resolve, settle)))
+      .then(poll)
+      .then(() => win?.webContents.send("now-playing", current));
+  }
 });
 
 // LP를 오른쪽 클릭하면 나오는 메뉴
