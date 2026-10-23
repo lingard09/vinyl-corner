@@ -124,7 +124,8 @@ html, body {
   pointer-events: none;
   filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.35));
 }
-#deck.playing #arm { transform: rotate(9deg); } /* 바늘이 바깥쪽 홈에 닿는 각도 */
+/* 재생 중: 곡 처음엔 바깥쪽 홈(9도), 끝날 땐 라벨 바로 앞(9도 + 8도)까지 들어간다 */
+#deck.playing #arm { transform: rotate(calc(9deg + var(--progress, 0) * 8deg)); }
 #arm .base { fill: #2b2b2b; stroke: #8a8a8a; stroke-width: 1.5; }
 #arm .pin { fill: #bdbdbd; }
 #arm .rod { fill: none; stroke: #d6d6d6; stroke-width: 3.2; stroke-linecap: round; }

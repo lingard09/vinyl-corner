@@ -24,7 +24,14 @@ function read(name) {
       album: t.album(),
       id: name === "Spotify" ? t.id() : t.persistentID(),
       art: name === "Spotify" ? t.artworkUrl() : null,
+      // 곡 진행률 0~1 (톤암 위치). Spotify는 곡 길이를 밀리초, Music은 초로 준다
+      progress: 0,
     };
+    try {
+      // 재생 위치를 못 읽어도 곡 정보는 보여준다 (톤암만 바깥쪽에)
+      const duration = name === "Spotify" ? t.duration() / 1000 : t.duration();
+      if (duration > 0) info.progress = Math.min(1, Math.max(0, app.playerPosition() / duration));
+    } catch (e) {}
     return info.title ? info : null;
   } catch (e) {
     return null; // 앱이 없거나 곡 정보가 없을 때
@@ -47,6 +54,7 @@ function osascript(script) {
 async function readNowPlaying() {
   const out = await osascript(READ_SCRIPT);
   const track = out ? JSON.parse(out) : null;
+  if (track) track.progress = Math.round(track.progress * 1000) / 1000;
   if (track && !track.art) track.art = await findArtwork(track.artist, track.album);
   return track;
 }

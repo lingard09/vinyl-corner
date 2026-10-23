@@ -5,9 +5,40 @@
   "private": true,
   "main": "src/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dist": "electron-builder --mac dmg"
   },
   "devDependencies": {
-    "electron": "43.7.9"
+    "electron": "43.7.9",
+    "electron-builder": "26.16.1"
+  },
+  "build": {
+    "appId": "app.pandori.lp",
+    "productName": "Pandori",
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.music",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "identity": "-",
+      "hardenedRuntime": false,
+      "extendInfo": {
+        "LSUIElement": true,
+        "NSAppleEventsUsageDescription": "지금 재생 중인 노래를 LP로 보여주려고 Spotify와 Music에 곡 정보를 물어봅니다."
+      }
+    },
+    "dmg": {
+      "artifactName": "Pandori-${version}-${arch}.dmg"
+    }
   }
 }

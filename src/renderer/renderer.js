@@ -16,6 +16,8 @@ window.lp.onNowPlaying((track) => {
   }
   deck.classList.remove("away");
   deck.classList.toggle("playing", track.playing);
+  // 곡이 진행될수록 톤암이 판 안쪽으로 들어간다
+  deck.style.setProperty("--progress", track.progress ?? 0);
   title.textContent = track.title;
   artist.textContent = track.artist;
 
