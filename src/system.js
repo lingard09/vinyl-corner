@@ -7,6 +7,8 @@
 
 const { spawn, execFile } = require("node:child_process");
 const fs = require("node:fs");
+const os = require("node:os");
+const { nativeImage } = require("electron");
 const path = require("node:path");
 
 // 기존 방식으로 읽는 앱은 여기서 빼서 두 번 잡히지 않게 한다
@@ -51,6 +53,39 @@ function start() {
   });
 }
 
+// 커버를 화면에서 쓸 수 있는 작은 JPEG data URL로 바꾼다.
+// 사파리는 artworkMimeType을 image/jpeg라고 하면서 실제로는 TIFF를 줘서, 그대로 쓰면 화면에서 안 열린다.
+// 라벨은 작으니 300px로 줄여 화면에 보내는 양도 줄인다.
+let artSeq = 0;
+async function toArtUrl(base64) {
+  try {
+    const buf = Buffer.from(base64, "base64");
+    let image = nativeImage.createFromBuffer(buf);
+    if (image.isEmpty()) image = await viaSips(buf); // nativeImage가 못 여는 형식(TIFF 등)은 macOS sips로 변환
+    if (!image || image.isEmpty()) return null;
+    const { width } = image.getSize();
+    if (width > 300) image = image.resize({ width: 300, quality: "good" });
+    return `data:image/jpeg;base64,${image.toJPEG(85).toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
+function viaSips(buf) {
+  return new Promise((resolve) => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "vinyl-art-"));
+    const src = path.join(dir, "in");
+    const out = path.join(dir, "out.jpg");
+    fs.writeFileSync(src, buf);
+    execFile("/usr/bin/sips", ["-s", "format", "jpeg", src, "--out", out], { timeout: 4000 }, (err) => {
+      let image = null;
+      if (!err && fs.existsSync(out)) image = nativeImage.createFromPath(out);
+      fs.rmSync(dir, { recursive: true, force: true });
+      resolve(image);
+    });
+  });
+}
+
 function apply(line) {
   let msg;
   try {
@@ -66,7 +101,13 @@ function apply(line) {
     else next[key] = value;
   }
   if (next.artworkData !== state.artworkData || !msg.diff) {
-    artUrl = next.artworkData ? `data:${next.artworkMimeType || "image/jpeg"};base64,${next.artworkData}` : null;
+    const seq = ++artSeq;
+    artUrl = null;
+    if (next.artworkData) {
+      toArtUrl(next.artworkData).then((url) => {
+        if (seq === artSeq) artUrl = url; // 그 사이 커버가 또 바뀌었으면 버린다
+      });
+    }
   }
   state = next;
   if (!next.title) lastOther = null; // 재생하던 탭을 닫으면 잊는다
