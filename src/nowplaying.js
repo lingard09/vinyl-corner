@@ -53,6 +53,8 @@ function osascript(script) {
 
 /** 지금 재생 중인 곡. 없으면 null
  * 재생 중인 Spotify·Music → 재생 중인 브라우저 등(시스템) → 일시정지된 Spotify·Music → 일시정지된 시스템 순 */
+let lastActive = null; // 마지막으로 재생 중이던 곳 ("Spotify", "Music", "system")
+
 async function readNowPlaying() {
   let app = null;
   try {
@@ -62,7 +64,11 @@ async function readNowPlaying() {
     // osascript가 실패해도 시스템 쪽은 보여준다
   }
   const sys = readSystem();
-  const track = [app, sys].find((t) => t?.playing) || app || sys || null;
+  // 둘 다 멈춰 있으면 마지막으로 재생하던 쪽을 보여준다
+  // (유튜브를 멈췄는데 예전에 멈춰 둔 Spotify로 바뀌지 않게)
+  const playing = [app, sys].find((t) => t?.playing);
+  if (playing) lastActive = playing.app;
+  const track = playing || [app, sys].find((t) => t && t.app === lastActive) || app || sys || null;
   if (!track) return null;
   track.progress = Math.round(track.progress * 1000) / 1000;
   if (!track.art && track.album) track.art = await findArtwork(track.artist, track.album);

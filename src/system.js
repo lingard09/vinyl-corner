@@ -69,12 +69,20 @@ function apply(line) {
     artUrl = next.artworkData ? `data:${next.artworkMimeType || "image/jpeg"};base64,${next.artworkData}` : null;
   }
   state = next;
+  if (!next.title) lastOther = null; // 재생하던 탭을 닫으면 잊는다
 }
 
 /** 시스템에서 재생 중인 곡 (Spotify·Music 제외). 없으면 null */
+let lastOther = null; // Spotify·Music이 아닌 마지막 곡
+
 function readSystem() {
   const s = state;
-  if (!s.title || SKIP_BUNDLES.has(s.parentApplicationBundleIdentifier || s.bundleIdentifier)) return null;
+  if (!s.title) return null;
+  // 시스템 "지금 재생 중"이 Spotify·Music으로 넘어가도, 멈춘 브라우저 곡은 멈춘 상태로 남겨 둔다
+  // (어느 쪽을 보여줄지는 nowplaying.js가 마지막으로 재생하던 곳 기준으로 고른다)
+  if (SKIP_BUNDLES.has(s.parentApplicationBundleIdentifier || s.bundleIdentifier)) {
+    return lastOther ? { ...lastOther, playing: false } : null;
+  }
   // 재생 위치는 timestamp 시점의 값이라, 재생 중이면 그 뒤로 흐른 시간을 더한다
   let progress = 0;
   if (s.durationMicros > 0 && s.elapsedTimeMicros != null) {
@@ -82,7 +90,7 @@ function readSystem() {
     if (s.playing && s.timestampEpochMicros) elapsed += (Date.now() * 1000 - s.timestampEpochMicros) * (s.playbackRate || 1);
     progress = Math.min(1, Math.max(0, elapsed / s.durationMicros));
   }
-  return {
+  lastOther = {
     app: "system",
     playing: Boolean(s.playing),
     title: s.title,
@@ -92,6 +100,7 @@ function readSystem() {
     art: artUrl,
     progress,
   };
+  return lastOther;
 }
 
 /** 재생/일시정지 전환 (kMRTogglePlayPause = 2) */
