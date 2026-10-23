@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <!-- 앨범 커버는 https 이미지만 허용하고, 스크립트는 이 폴더 것만 -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; style-src 'self'" />
+  <title>판돌이</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="deck" class="away">
+    <div id="info">
+      <strong id="title"></strong>
+      <span id="artist"></span>
+    </div>
+    <div id="platter">
+      <div id="disc">
+        <div id="label">
+          <img id="art" alt="" />
+          <span id="initial"></span>
+        </div>
+        <div id="hole"></div>
+      </div>
+      <!-- 빛 반사는 판과 같이 돌면 어색해서 판 위에 고정해 둔다 -->
+      <div id="sheen"></div>
+    </div>
+    <svg id="arm" viewBox="0 0 60 120" aria-hidden="true">
+      <circle cx="44" cy="14" r="11" class="base" />
+      <circle cx="44" cy="14" r="4" class="pin" />
+      <path d="M44 14 L44 74 Q44 92 30 100" class="rod" />
+      <rect x="22" y="96" width="14" height="20" rx="2" transform="rotate(35 29 106)" class="head" />
+    </svg>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>

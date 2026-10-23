@@ -1,0 +1,158 @@
+/* 창 배경은 투명. LP와 톤암만 보인다 */
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+}
+
+:root {
+  --size: 176px; /* LP 지름 */
+  --rev: 1.8s; /* 한 바퀴 시간: 33⅓ RPM = 60 / 33.33 = 1.8초 */
+}
+
+/* 창 오른쪽 아래에 LP를 놓는다 */
+#deck {
+  position: absolute;
+  right: 40px; /* 오른쪽은 톤암이 올라갈 자리를 남긴다 */
+  bottom: 10px;
+  width: var(--size);
+  height: var(--size);
+  transition: opacity 0.5s, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+/* 재생 중인 곡이 없으면 아래로 살짝 내려가며 사라진다 */
+#deck.away {
+  opacity: 0;
+  transform: translateY(24px) scale(0.92);
+  pointer-events: none;
+}
+
+#platter {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.35));
+  cursor: pointer;
+}
+
+/* 판: 가는 동심원을 반복해서 홈을 그린다 */
+#disc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 0 36%, rgba(255, 255, 255, 0.06) 36.5%, transparent 37.5%),
+    radial-gradient(circle, transparent 0 92%, rgba(255, 255, 255, 0.05) 92.5%, transparent 93.5%),
+    repeating-radial-gradient(circle, #141414 0 1.2px, #1d1d1d 1.2px 2.4px);
+  animation: spin var(--rev) linear infinite;
+  animation-play-state: paused;
+}
+#deck.playing #disc { animation-play-state: running; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 가운데 라벨: 앨범 커버 */
+#label {
+  position: absolute;
+  inset: 31%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #c8f560;
+  display: grid;
+  place-items: center;
+}
+#art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+#art.ready { opacity: 1; }
+/* 커버를 못 찾으면 곡 제목 첫 글자 */
+#initial {
+  position: absolute;
+  font-size: 22px;
+  font-weight: 800;
+  color: #22201c;
+}
+#art.ready + #initial { display: none; }
+
+#hole {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 50%;
+  background: #d9d9d9;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+#sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: conic-gradient(
+    from 40deg,
+    transparent 0 6%,
+    rgba(255, 255, 255, 0.13) 12%,
+    transparent 20% 50%,
+    rgba(255, 255, 255, 0.1) 62%,
+    transparent 70%
+  );
+  /* 라벨 위에는 빛이 비치지 않게 */
+  -webkit-mask: radial-gradient(circle, transparent 0 32%, #000 33%);
+  mask: radial-gradient(circle, transparent 0 32%, #000 33%);
+}
+
+/* 톤암: 재생 중이면 판 위로 내려오고, 멈추면 바깥으로 올라간다 */
+#arm {
+  position: absolute;
+  right: -20px;
+  top: -14px;
+  width: 60px;
+  height: 120px;
+  transform-origin: 44px 14px; /* 받침 원의 가운데가 회전축 */
+  transform: rotate(-20deg);
+  transition: transform 0.9s cubic-bezier(0.3, 0.7, 0.3, 1);
+  pointer-events: none;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.35));
+}
+#deck.playing #arm { transform: rotate(9deg); } /* 바늘이 바깥쪽 홈에 닿는 각도 */
+#arm .base { fill: #2b2b2b; stroke: #8a8a8a; stroke-width: 1.5; }
+#arm .pin { fill: #bdbdbd; }
+#arm .rod { fill: none; stroke: #d6d6d6; stroke-width: 3.2; stroke-linecap: round; }
+#arm .head { fill: #2b2b2b; stroke: #8a8a8a; stroke-width: 1.2; }
+
+/* 마우스를 올리면 LP 위에 곡 정보 말풍선 */
+#info {
+  position: absolute;
+  right: 30px; /* 톤암 받침과 겹치지 않게 */
+  bottom: calc(100% + 18px);
+  max-width: 230px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(24, 24, 24, 0.88);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+}
+#deck:has(#platter:hover) #info { opacity: 1; transform: none; }
+#title, #artist { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#title { font-size: 13px; }
+#artist { font-size: 12px; color: rgba(255, 255, 255, 0.7); }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --rev: 6s; }
+}

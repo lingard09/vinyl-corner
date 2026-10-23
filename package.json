@@ -1,0 +1,13 @@
+{
+  "name": "pandori",
+  "version": "0.1.0",
+  "description": "맥에서 지금 재생 중인 노래를 화면 오른쪽 아래에 도는 LP로 띄워주는 앱",
+  "private": true,
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "43.7.9"
+  }
+}
