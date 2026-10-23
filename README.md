@@ -1,4 +1,4 @@
-# 판돌이
+# Vinyl Corner
 
 맥에서 지금 재생 중인 노래를 화면 오른쪽 아래에 **도는 LP**로 띄워주는 앱.
 
@@ -26,7 +26,7 @@ npm install
 npm run dist
 ```
 
-`dist/` 폴더에 `Pandori-0.1.0-arm64.dmg`(Apple 실리콘), `Pandori-0.1.0-x64.dmg`(인텔)가 생긴다.
+`dist/` 폴더에 `VinylCorner-0.1.0-arm64.dmg`(Apple 실리콘), `VinylCorner-0.1.0-x64.dmg`(인텔)가 생긴다.
 애플 공증을 받지 않은 앱이라, 받은 사람은 처음 열 때 **시스템 설정 → 개인정보 보호 및 보안 → "그래도 열기"**를 한 번 눌러야 한다.
 
 - `LSUIElement`: 독에 아이콘을 띄우지 않는다

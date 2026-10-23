@@ -1,4 +1,4 @@
-// 판돌이: 지금 재생 중인 노래를 화면 오른쪽 아래에 도는 LP로 띄운다
+// Vinyl Corner: 지금 재생 중인 노래를 화면 오른쪽 아래에 도는 LP로 띄운다
 const { app, BrowserWindow, Menu, ipcMain, screen } = require("electron");
 const path = require("node:path");
 const { readNowPlaying, togglePlay } = require("./nowplaying");
@@ -80,7 +80,7 @@ ipcMain.on("menu", () => {
     { label: "33⅓ RPM", type: "radio", checked: rpm === 33, click: () => setRpm(33) },
     { label: "45 RPM", type: "radio", checked: rpm === 45, click: () => setRpm(45) },
     { type: "separator" },
-    { label: "판돌이 끄기", click: () => app.quit() },
+    { label: "Vinyl Corner 끄기", click: () => app.quit() },
   ]).popup({ window: win });
 });
 

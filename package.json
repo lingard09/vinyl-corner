@@ -1,5 +1,5 @@
 {
-  "name": "pandori",
+  "name": "vinyl-corner",
   "version": "0.1.0",
   "description": "맥에서 지금 재생 중인 노래를 화면 오른쪽 아래에 도는 LP로 띄워주는 앱",
   "private": true,
@@ -13,8 +13,8 @@
     "electron-builder": "26.16.1"
   },
   "build": {
-    "appId": "app.pandori.lp",
-    "productName": "Pandori",
+    "appId": "app.vinylcorner.mac",
+    "productName": "Vinyl Corner",
     "files": [
       "src/**/*",
       "package.json"
@@ -39,7 +39,7 @@
       "icon": "build/icon.png"
     },
     "dmg": {
-      "artifactName": "Pandori-${version}-${arch}.dmg"
+      "artifactName": "VinylCorner-${version}-${arch}.dmg"
     }
   }
 }
