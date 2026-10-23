@@ -91,20 +91,28 @@ function createWindow() {
 }
 
 // 1초마다 확인하고, 곡이나 재생 상태가 바뀌었을 때만 화면에 알린다
-let polling = false;
-async function poll() {
-  if (polling || !win) return;
-  polling = true;
-  try {
-    const track = await readNowPlaying();
-    const changed = JSON.stringify(track) !== JSON.stringify(current);
-    current = track;
-    if (changed) win.webContents.send("now-playing", track);
-  } catch {
-    // osascript가 실패해도 다음 확인에서 다시 시도한다
-  } finally {
-    polling = false;
-  }
+let inflight = null; // 진행 중인 확인 (겹치지 않게)
+function poll() {
+  if (inflight || !win) return inflight || Promise.resolve();
+  inflight = (async () => {
+    try {
+      const track = await readNowPlaying();
+      const changed = JSON.stringify(track) !== JSON.stringify(current);
+      current = track;
+      if (changed) win.webContents.send("now-playing", track);
+    } catch {
+      // osascript가 실패해도 다음 확인에서 다시 시도한다
+    }
+  })().finally(() => {
+    inflight = null;
+  });
+  return inflight;
+}
+
+// 클릭 전에 시작된 확인은 옛 상태를 읽었을 수 있어서, 그게 끝난 뒤 새로 한 번 더 확인한다
+async function pollFresh() {
+  if (inflight) await inflight;
+  await poll();
 }
 
 ipcMain.on("set-clickable", (_e, clickable) => {
@@ -118,7 +126,7 @@ ipcMain.on("toggle", () => {
     const settle = current.app === "system" ? 600 : 0;
     togglePlay(current.app)
       .then(() => new Promise((resolve) => setTimeout(resolve, settle)))
-      .then(poll)
+      .then(pollFresh)
       .then(() => win?.webContents.send("now-playing", current));
   }
 });
