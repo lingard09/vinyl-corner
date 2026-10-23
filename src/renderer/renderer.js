@@ -33,13 +33,30 @@ window.lp.onNowPlaying((track) => {
     // 𝐏 같은 꾸밈 글자는 보통 글자로 (NFKC)
     initial.textContent = [...(track.title || "♪").normalize("NFKC")][0];
   }
+  // 새 커버는 다 받은 뒤에 바꿔서, 그 사이 연두색 기본 라벨이 번쩍이지 않게 한다.
+  // 커버가 없어졌을 때도 곧 새 커버가 오는 경우가 많아서 1.5초 기다린 뒤에 기본 라벨로
   if ((track.art || null) !== shownArt) {
     shownArt = track.art || null;
-    art.classList.remove("ready");
-    if (shownArt) art.src = shownArt;
-    else art.removeAttribute("src");
+    clearTimeout(fallbackTimer);
+    if (shownArt) {
+      const want = shownArt;
+      const img = new Image();
+      img.onload = () => {
+        if (want === shownArt) art.src = want; // 그 사이 또 바뀌었으면 버린다
+      };
+      img.onerror = () => {
+        if (want === shownArt) art.classList.remove("ready");
+      };
+      img.src = want;
+    } else {
+      fallbackTimer = setTimeout(() => {
+        art.classList.remove("ready");
+        art.removeAttribute("src");
+      }, 1500);
+    }
   }
 });
+let fallbackTimer = null;
 
 art.addEventListener("load", () => art.classList.add("ready"));
 art.addEventListener("error", () => art.classList.remove("ready"));
