@@ -25,7 +25,8 @@ window.lp.onNowPlaying((track) => {
   // 곡이나 커버가 바뀌었을 때만 라벨을 바꾼다 (브라우저는 커버가 제목보다 늦게 오기도 한다)
   if (track.id !== shownId) {
     shownId = track.id;
-    initial.textContent = [...(track.title || "♪")][0];
+    // 𝐏 같은 꾸밈 글자는 보통 글자로 (NFKC)
+    initial.textContent = [...(track.title || "♪").normalize("NFKC")][0];
   }
   if ((track.art || null) !== shownArt) {
     shownArt = track.art || null;
