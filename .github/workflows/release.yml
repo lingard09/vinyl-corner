@@ -1,9 +1,13 @@
-# v로 시작하는 태그(v0.1.0 등)를 올리면 GitHub의 맥 서버에서 dmg를 만들어 Releases에 올린다
+# GitHub의 맥 서버에서 dmg를 만들어 Releases에 올린다
+# - v로 시작하는 태그(v0.1.0 등)를 올리거나
+# - Actions 탭 → release → "Run workflow"를 누르면 실행된다
+# 릴리스 이름과 태그는 package.json의 version으로 정해진다 (0.1.0 → v0.1.0)
 name: release
 
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
 
 permissions:
   contents: write # Releases에 파일을 올리려면 필요
