@@ -39,6 +39,11 @@ window.lp.onNowPlaying((track) => {
 art.addEventListener("load", () => art.classList.add("ready"));
 art.addEventListener("error", () => art.classList.remove("ready"));
 
+// 화면 배율이 작으면 말풍선 글자를 되돌려 키운다 (실제 크기로 12px 안팎 유지, 최대 1.4배)
+window.lp.onScale((scale) => {
+  document.documentElement.style.setProperty("--text", Math.min(1.4, 1 / scale));
+});
+
 window.lp.onRpm((rpm) => {
   // 한 바퀴 걸리는 시간. 33⅓·45는 실제 LP 속도, 기본은 어지럽지 않게 느리게
   document.documentElement.style.setProperty("--rev", rpm === 45 ? "1.333s" : rpm === 33 ? "1.8s" : "4s");

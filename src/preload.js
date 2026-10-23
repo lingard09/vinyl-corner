@@ -4,6 +4,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("lp", {
   onNowPlaying: (cb) => ipcRenderer.on("now-playing", (_e, track) => cb(track)),
   onRpm: (cb) => ipcRenderer.on("rpm", (_e, rpm) => cb(rpm)),
+  onScale: (cb) => ipcRenderer.on("scale", (_e, scale) => cb(scale)),
   setClickable: (clickable) => ipcRenderer.send("set-clickable", clickable),
   toggle: () => ipcRenderer.send("toggle"),
   menu: () => ipcRenderer.send("menu"),

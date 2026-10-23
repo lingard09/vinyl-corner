@@ -48,7 +48,8 @@ function fitWindow() {
   const { workArea } = screen.getPrimaryDisplay(); // 독·메뉴바를 뺀 영역
   const scale = scaleFor(workArea);
   const width = Math.round(WIDTH * scale);
-  const height = Math.round(HEIGHT * scale);
+  // 말풍선 글자는 덜 줄어드니(--text), 줄어든 만큼 위쪽에 자리를 더 둔다
+  const height = Math.round(HEIGHT * scale + 50 * (1 - scale));
   win.setBounds({
     width,
     height,
@@ -56,6 +57,7 @@ function fitWindow() {
     y: workArea.y + workArea.height - height - MARGIN,
   });
   win.webContents.setZoomFactor(scale); // CSS 전체를 같은 비율로 줄인다
+  win.webContents.send("scale", scale);
 }
 
 function createWindow() {
