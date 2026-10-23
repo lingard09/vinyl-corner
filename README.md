@@ -33,9 +33,16 @@
    - Apple 실리콘(M1 이후): `VinylCorner-x.y.z-arm64.dmg`
    - 인텔: `VinylCorner-x.y.z-x64.dmg`
 2. dmg를 열고 Vinyl Corner를 응용 프로그램 폴더로 옮깁니다
-3. 처음 열 때 "확인되지 않은 개발자" 경고가 나오면
-   **시스템 설정 → 개인정보 보호 및 보안 → 아래쪽 "그래도 열기"** 를 누릅니다
-   (애플 유료 개발자 인증을 받지 않은 개인 프로젝트라 한 번 거쳐야 해요)
+3. 처음 열면 이런 경고가 뜹니다. 고장이나 악성 코드가 아니라, 애플 유료 인증(공증)을 받지 않은 개인 프로젝트라 한 번 거쳐야 해요
+   > Apple could not verify "Vinyl Corner.app" is free of malware that may harm your Mac or compromise your privacy.
+   >
+   > (한국어 macOS에서는 "악성 코드가 없는지 확인할 수 없다"는 내용)
+
+   - 경고 창은 **완료**를 눌러 닫습니다 (휴지통으로 옮기지 마세요)
+   - **시스템 설정 → 개인정보 보호 및 보안**을 맨 아래까지 내려 **그래도 열기**를 누르고, 암호나 Touch ID로 허용합니다
+   - "그래도 열기" 버튼은 앱을 열어 본 뒤 **약 한 시간 동안만** 보여요. 안 보이면 앱을 한 번 더 열고 다시 가보세요
+   - 새 버전으로 덮어쓴 뒤에도 한 번 더 해야 할 수 있어요
+   - 터미널이 편하다면: `xattr -dr com.apple.quarantine "/Applications/Vinyl Corner.app"`
 4. "Vinyl Corner가 Spotify(Music)를 제어하려고 합니다"가 뜨면 **허용**합니다.
    곡 정보를 읽는 데만 씁니다
 
