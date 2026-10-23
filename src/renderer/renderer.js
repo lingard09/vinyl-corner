@@ -40,7 +40,8 @@ art.addEventListener("load", () => art.classList.add("ready"));
 art.addEventListener("error", () => art.classList.remove("ready"));
 
 window.lp.onRpm((rpm) => {
-  document.documentElement.style.setProperty("--rev", rpm === 45 ? "1.333s" : "1.8s");
+  // 한 바퀴 걸리는 시간. 33⅓·45는 실제 LP 속도, 기본은 어지럽지 않게 느리게
+  document.documentElement.style.setProperty("--rev", rpm === 45 ? "1.333s" : rpm === 33 ? "1.8s" : "4s");
 });
 
 // LP 위에서만 클릭을 받는다. 나머지 영역은 뒤 창으로 클릭이 통과한다
