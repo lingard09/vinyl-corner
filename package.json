@@ -12,8 +12,8 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --mac dmg",
-    "release": "electron-builder --mac dmg --publish always"
+    "dist": "electron-builder --mac",
+    "release": "electron-builder --mac --publish always"
   },
   "devDependencies": {
     "electron": "43.7.9",
