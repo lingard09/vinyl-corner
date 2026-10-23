@@ -136,7 +136,7 @@ html, body {
   position: absolute;
   right: 30px; /* 톤암 받침과 겹치지 않게 */
   bottom: calc(100% + 18px);
-  max-width: 230px;
+  max-width: 196px; /* 창(280) 안에 들어가게: 280 - 덱 오른쪽 40 - 30 - 여백 */
   padding: 8px 12px;
   border-radius: 10px;
   background: rgba(24, 24, 24, 0.88);
