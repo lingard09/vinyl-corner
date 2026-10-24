@@ -33,8 +33,8 @@
 
 1. [Releases](https://github.com/lingard09/vinyl-corner/releases/latest)에서 내 맥에 맞는 dmg를 받습니다
    (사과 메뉴 → 이 Mac에 관하여에서 "칩: Apple M…"이면 arm64, "프로세서: Intel…"이면 x64)
-   - Apple 실리콘(M1 이후): `VinylCorner-x.y.z-arm64.dmg`
-   - 인텔: `VinylCorner-x.y.z-x64.dmg`
+   - Apple 실리콘(M1 이후): [VinylCorner-arm64.dmg](https://github.com/lingard09/vinyl-corner/releases/latest/download/VinylCorner-arm64.dmg)
+   - 인텔: [VinylCorner-x64.dmg](https://github.com/lingard09/vinyl-corner/releases/latest/download/VinylCorner-x64.dmg)
 2. dmg를 열고 Vinyl Corner를 응용 프로그램 폴더로 옮깁니다
 3. 처음 열면 이런 경고가 뜹니다. 고장이나 악성 코드가 아니라, 애플 유료 인증(공증)을 받지 않은 개인 프로젝트라 한 번 거쳐야 해요
    > Apple could not verify "Vinyl Corner.app" is free of malware that may harm your Mac or compromise your privacy.

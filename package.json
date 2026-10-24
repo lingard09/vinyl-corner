@@ -1,6 +1,6 @@
 {
   "name": "vinyl-corner",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "맥에서 지금 재생 중인 노래를 화면 오른쪽 아래에 도는 LP로 띄워주는 앱",
   "author": "lingard09",
   "license": "MIT",
@@ -47,7 +47,7 @@
       "icon": "build/icon.png"
     },
     "dmg": {
-      "artifactName": "VinylCorner-${version}-${arch}.dmg"
+      "artifactName": "VinylCorner-${arch}.dmg"
     },
     "publish": {
       "provider": "github",
